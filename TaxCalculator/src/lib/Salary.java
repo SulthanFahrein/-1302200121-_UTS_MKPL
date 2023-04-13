@@ -1,17 +1,28 @@
 package lib;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class Salary {
-    private int monthlySalary;
-    private int otherMonthlyIncome;
-    private int annualDeductible;
+    private double monthlySalary;
+    private double otherMonthlyIncome;
+    private double annualDeductible;
     private int monthWorkingInYear;
     private LocalDate dateJoined;
     private String spouseIdNumber;
+    private boolean isForeigner;
     private List<String> childIdNumbers;
 
-    public Salary() {
+    public double getMonthlySalary() {
+        return monthlySalary;
+    }
+
+    public double getOtherMonthlyIncome() {
+        return otherMonthlyIncome;
+    }
+
+    public String getSpouseIdNumber() {
+        return spouseIdNumber;
     }
 
     /**
@@ -19,35 +30,45 @@ public class Salary {
      * Jika pegawai adalah warga negara asing gaji bulanan diperbesar sebanyak 50%
      */
 
-    public void setMonthlySalary(int grade, boolean isForeigner) {
+    public void setMonthlySalary(int grade) {
         if (grade == 1) {
             monthlySalary = 3000000;
             if (isForeigner) {
-                monthlySalary = (int) (3000000 * 1.5);
+                monthlySalary *= 1.5;
             }
         } else if (grade == 2) {
             monthlySalary = 5000000;
             if (isForeigner) {
-                monthlySalary = (int) (5000000 * 1.5);
+                monthlySalary *= 1.5;
             }
         } else if (grade == 3) {
             monthlySalary = 7000000;
             if (isForeigner) {
-                monthlySalary = (int) (7000000 * 1.5);
+                monthlySalary *= 1.5;
             }
         }
     }
-    public int getAnnualIncomeTax() {
-		
-		//Menghitung berapa lama pegawai bekerja dalam setahun ini, jika pegawai sudah bekerja dari tahun sebelumnya maka otomatis dianggap 12 bulan.
-		LocalDate date = LocalDate.now();
-		
-		if (date.getYear() == dateJoined.getYear()) {
-			monthWorkingInYear = date.getMonthValue() - dateJoined.getMonthValue();
-		}else {
-			monthWorkingInYear = 12;
-		}
-		
-		return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
-	}
+
+    public void setAnnualDeductible(double deductible) {
+        this.annualDeductible = deductible;
+    }
+
+    public void setOtherMonthlyIncome(double income) {
+        this.otherMonthlyIncome = income;
+    }
+
+    public double getAnnualIncomeTax() {
+
+        // Menghitung berapa lama pegawai bekerja dalam setahun ini, jika pegawai sudah bekerja dari tahun sebelumnya maka otomatis dianggap 12 bulan.
+        LocalDate now = LocalDate.now();
+
+        if (now.getYear() == dateJoined.getYear()) {
+            monthWorkingInYear = now.getMonthValue() - dateJoined.getMonthValue();
+        } else {
+            monthWorkingInYear = 12;
+        }
+
+        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber == null || spouseIdNumber.isEmpty(), childIdNumbers.size());
+    }
+
 }
